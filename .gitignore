@@ -1,0 +1,8 @@
+node_modules
+*.log
+*.log.*
+config/env/local.json
+*.nbproject
+nbproject
+nbproject/private/private.xml
+/nbproject/private/
