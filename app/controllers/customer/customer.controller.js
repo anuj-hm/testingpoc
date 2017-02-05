@@ -1,9 +1,11 @@
 /*
  * @author  : Anuj gupta
- * @desc    : manage language related data
+ * @desc    : manage customer related data
  */
 
 var CustomerModel       = require( '../../models/customer/customer.model' );
+var dbError             = {code : 100, 
+                             message : "Duplicate user"};
 
 /**
  * @name create
@@ -18,13 +20,19 @@ function create(data, callback) {
     var customer = new CustomerModel({
         name     : data.name,
         email    : data.email,
-        mobileno : data.mobileno
+        mobileno : data.mobileno,
+        status : data.status
     });
 
     customer.save(function(err, res) {
         if(err) {
-            console.log("Unable to save customer due to", JSON.stringify(err));
-            return callback(err, null);
+            if(err.code === 11000) {
+                console.error(new Error("Email already exist"));
+                return callback(dbError, null);
+            } else {
+                console.log("Unable to save customer due to", JSON.stringify(err));
+                return callback(err, null);
+            }
         }
         return callback(err, customer);
     });
@@ -58,8 +66,15 @@ function update(data, callback) {
  * @param {function} callback
  * @returns {function} callback with error or res object.
  */
-function getAll(callback) {
-    CustomerModel.find({}, function(err, res) {
+function getAll(status, callback) {
+    var query ;
+    if(status) {
+        query = {status :  status} ;
+    } else {
+        query = {};
+    }
+    console.log(query, status);
+    CustomerModel.find(query, function(err, res) {
         if(err) {
             console.log("Unable to get all customer due to %s", JSON.stringify(err));
             return callback(err, null);
@@ -130,8 +145,12 @@ function apiCC(req, rsp) {
     if(req.body.mobileno) {
         data.mobileno  = req.body.mobileno;
     }
+    if(req.body.status) {
+        data.status  = req.body.status;
+    }
     create(data, function(err, res) {
         if(err) {
+            rsp.status(409);
             rsp.send(err);
         }
         else {
@@ -160,6 +179,9 @@ function apiUC(req, rsp) {
     if(req.body.mobileno) {
         data.mobileno  = req.body.mobileno;
     }
+    if(req.body.status) {
+        data.status  = req.body.status;
+    }
     update(data, function(err, res) {
         if(err) {
             rsp.send(err);
@@ -178,7 +200,10 @@ function apiUC(req, rsp) {
  * @param {Object} rsp
  */
 function apiRAC(req, rsp) {
-    getAll(function(err, res) {
+    
+    var status = req.query.status;
+    
+    getAll(status, function(err, res) {
         if(err) {
             rsp.send(err);
         }
@@ -211,7 +236,7 @@ function apiDC(req, rsp) {
 };
 
 /**
- * Restful wrapper to call getAll function.
+ * Restful wrapper to call getCustomerByID function.
  * @param {Object} req
  * @param {Object} rsp
  */

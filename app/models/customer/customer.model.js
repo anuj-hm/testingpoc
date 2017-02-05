@@ -11,10 +11,15 @@ var customerSchema  = new Schema({
         type : String
     },
     email : {
-        type : String
+        type : String,
+        unique : true,
+        required : true
     },
     mobileno : {
         type : Number
+    },
+    status : {
+        type : String
     },
     cretated : {
         type : Date,

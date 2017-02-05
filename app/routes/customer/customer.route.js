@@ -10,6 +10,9 @@ module.exports = function(app) {
     app.route('/customer')
         .post(customerCtrl.apiCC)
         .get(customerCtrl.apiRAC);
+//
+//    app.route('/customer/:status')
+//        .get(customerCtrl.apiRAC);
 
     app.route('/customer/:userid')
         .put(customerCtrl.apiUC)
