@@ -4,7 +4,7 @@ var methodOverride          = require('method-override');
 var mongoose                = require('mongoose');
 var http                    = require('http');
 var portNumber              = 7000;
-var mongourl                = "mongodb://localhost/DigipatCustomerDB";
+var mongourl                = "mongodb://test:switchforif123@ds259586.mlab.com:59586/radigiopoc";
 var app = express();
 
 app.use(bodyParser.json());
