@@ -4,6 +4,9 @@
   "keywords": [
     "server"
   ],
+  "scripts": {
+	    "start": "node server.js"
+  },
   "author": "Anuj Gupta",
   "contributors": [],
   "dependencies": {
